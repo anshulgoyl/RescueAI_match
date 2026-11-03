@@ -7,10 +7,36 @@ from app import MAX_SHORTLIST, build_gallery, rank_dogs, shortlist_can_add
 
 
 class MatchingTests(unittest.TestCase):
-    def test_interface_defines_all_four_lifestyle_questions(self):
+    def test_interface_defines_pet_choice_and_all_four_lifestyle_questions(self):
         interface = Path("index.html").read_text() + Path("app.js").read_text()
-        for question in ("dieren in huis", "deelt het huis", "dagelijkse activiteit", "omgeving"):
+        for question in ("hond of kat", "dieren in huis", "deelt het huis", "dagelijkse activiteit", "omgeving"):
             self.assertIn(question, interface.lower())
+
+    def test_cat_choice_is_honest_about_the_dog_only_mvp(self):
+        interface = Path("index.html").read_text() + Path("app.js").read_text()
+        self.assertIn("kattenprofielen", interface.lower())
+
+    def test_interface_labels_swipe_actions_and_uses_exit_animation(self):
+        interface = Path("index.html").read_text() + Path("app.js").read_text()
+        styles = Path("styles.css").read_text()
+        for label in ("Niet nu", "Meer over deze hond", "Bewaren"):
+            self.assertIn(label, interface)
+        self.assertIn("card-exit-right", styles)
+        self.assertIn("card-exit-left", styles)
+
+    def test_profile_dialog_shows_known_compatibility_details(self):
+        interface = Path("index.html").read_text() + Path("app.js").read_text()
+        self.assertIn('id="dialog-compatibility"', interface)
+        self.assertIn("knownCompatibility", interface)
+
+    def test_shortlist_can_be_cleared_in_one_action_and_shows_limit_status(self):
+        interface = Path("index.html").read_text() + Path("app.js").read_text()
+        self.assertIn('id="clear-shortlist"', interface)
+        self.assertIn('id="shortlist-limit"', interface)
+
+    def test_editorial_guides_exist(self):
+        for filename in ("CONTENT_WRITING_GUIDE.md", "RANKING_GUIDE.md", "IMAGE_CROPPING_GUIDE.md"):
+            self.assertTrue(Path(filename).is_file(), filename)
 
     def test_interface_explains_the_shortlist_cap(self):
         page = Path("index.html").read_text()
